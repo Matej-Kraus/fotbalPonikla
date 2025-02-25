@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TJ Poniklá</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="imagine/logo.jpg" alt="TJ Poniklá">
+            <span class="logo-text">Fotbalový klub Poniklá</span>
+        </div>
+        <nav>
+            <div id="menu-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul id="nav-list">
+                <li><a href="index.html">Úvod</a></li>
+                <li><a href="soupiska.html">Soupiska</a></li>
+                <li><a href="deti.html">Děti</a></li>
+                <li><a href="zapasy.html">Zápasy</a></li>
+                <li><a href="kontakt.html">Kontakt</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+
+    <section id="main-photo">
+        <img src="imagine/hromadne_foto.jpg" alt="Tým TJ Poniklá">
+    </section>
+   
+
+    
+    
+    <div class="tabulky-container">
+        <iframe id="tabulkaIframe" src="tabulka.html" width="49%" height="600"></iframe>
+        <iframe id="zapasyIframe" src="nadchazejici_zapasy.html" width="49%" height="600"></iframe>
+    </div>
+    
+    
+    
+    <div class="wrapper">
+        <div class="map-container">
+            <h3>Kde nás najdete</h3>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2529.068969776859!2d15.456956276728032!3d50.662979971633455!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470ec7bad623356d%3A0xd2d314b753282fa3!2zRm90YmFsb3bDqSBoxZlpxaF0xJsgUG9uaWtsw6E!5e0!3m2!1scs!2scz!4v1739966859310!5m2!1scs!2scz" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>        </div>
+    
+        <section id="contact">
+            <div class="info con-box">
+                <div class="con">
+                    <h2>Kontaktujte nás</h2>
+                    <ul>
+                        <li><img src="imagine/email_logo.png" alt=""> info@tjponikla.cz</li>
+                        <li><img src="imagine/white-phone-icon-on-blue-background-vector-7352042.jpg" alt=""> +420 123 456 789</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="info con-box white-background">
+                <div class="con">
+                    <h2>Napište nám</h2>
+                    <form class="form" action="mailto:info@tjponikla.cz" method="post" enctype="text/plain">
+                        <input type="email" placeholder="Zadejte váš e-mail" required>
+                        <input type="text" placeholder="Předmět" required>
+                        <textarea placeholder="Zadejte váš text..." required></textarea>
+                        <input type="submit" value="Odeslat" id="sbmt-btn">
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 TJ Poniklá. Všechna práva vyhrazena.</p>
+        <p><a href="https://validator.w3.org/check?uri=referer">Validace HTML</a> | <a href="https://jigsaw.w3.org/css-validator/validator?uri=referer">Validace CSS</a></p>
+    </footer>
+
+    <script src="script.js">
+       
+    </script>
+</body>
+
+</html>
