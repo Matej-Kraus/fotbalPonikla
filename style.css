@@ -746,3 +746,153 @@ footer a {
 
 
 
+
+/* Hero Section */
+.historie-hero {
+    text-align: center;
+    padding: 30px 15px; /* Větší padding pro výšku */
+    color: white;
+    font-size: 2.5em;
+    font-weight: bold;
+    background-color: rgba(3, 94, 213, 0.8);
+    height: 250px; /* Nastavení pevné výšky */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Vertikální zarovnání textu */
+}
+
+/* Historie Content */
+.historie-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 30px;
+    text-align: justify;
+    background: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Gallery Section */
+.historie-gallery {
+    text-align: center;
+    padding: 30px;
+    background: #eaeaea;
+}
+
+/* Gallery Container */
+.historie-gallery-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Gallery Item */
+.historie-gallery-item {
+    width: 28%;
+    border-radius: 8px;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Gallery Item Hover Effect */
+.historie-gallery-item:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive design for small screens */
+@media (max-width: 768px) {
+    .historie-gallery-item {
+        width: 90%;
+    }
+}
+
+
+
+/* Flexibilní rozpis tréninku */
+.rozpis-treninku-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    margin: auto;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Animace - Pomalé zobrazení */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Záhlaví rozpisu */
+.rozpis-treninku-header {
+    font-size: 2.5em;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #3c3c3c;
+    animation: slideIn 1s ease-in-out;
+}
+
+/* Animace - Zobrazení záhlaví */
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Týdenní tréninky */
+.rozpis-treninku-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+/* Každý trénink */
+.rozpis-treninku-item {
+    background-color: #e3f2fd;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 250px;
+    text-align: center;
+    font-size: 1.2em;
+    color: #2a2a2a;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Hover efekt pro každý trénink */
+.rozpis-treninku-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsivita pro mobilní zařízení */
+@media (max-width: 768px) {
+    .rozpis-treninku-header {
+        font-size: 2em;
+    }
+
+    .rozpis-treninku-item {
+        width: 80%;
+    }
+}
