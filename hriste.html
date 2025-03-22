@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zázemí klubu - TJ Poniklá</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+        <img src="imagine/logo.jpg" alt="TJ Poniklá">
+        <span class="logo-text">Fotbalový klub Poniklá</span>
+    </div>
+    <nav>
+        <div id="menu-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul id="nav-list">
+            <li><a href="index.html">Úvod</a></li>
+            <li><a href="soupiska.html">Soupiska</a></li>
+            <li><a href="deti.html">Děti</a></li>
+            <li><a href="historie.html">Historie</a></li>
+            <li><a href="hriste.html">Hřiště</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main class="zaz-main">
+    <section class="zaz-info">
+        <h2 class="zaz-title">Informace o stadionu</h2>
+        <p>Fotbalový stadion TJ Poniklá nabízí moderní hřiště s umělým i přírodním povrchem. Najdete zde také tribunu s kapacitou 500 diváků.</p>
+    </section>
+
+    <section class="zaz-tabulka">
+        <h2 class="zaz-title">Rozpis tréninků</h2>
+        <table>
+            <tr>
+                <th>Den</th>
+                <th>Čas</th>
+                <th>Kategorie</th>
+            </tr>
+            <tr>
+                <td>Pondělí</td>
+                <td>16:00 - 17:30</td>
+                <td rowspan="2">Mládež</td>
+            </tr>
+            <tr>
+                <td>Středa</td>
+                <td>16:00 - 17:30</td>
+            </tr>
+            <tr>
+                <td>Pátek</td>
+                <td>18:00 - 19:30</td>
+                <td>Dospělí</td>
+            </tr>
+        </table>
+    </section>
+
+
+
+    <section class="zaz-seznamy">
+      <h2 class="zaz-title">Vybavení stadionu</h2>
+      
+      <h3>🔹 Hlavní zařízení:</h3>
+      <ol>
+          <li>Fotbalové hřiště
+              <ol>
+                  <li>Přírodní tráva</li>
+                  <li>Umělá tráva</li>
+              </ol>
+          </li>
+          <li>Tribuna</li>
+          <li>Šatny</li>
+          <li>Tréninková plocha</li>
+      </ol>
+  
+      <h3>🏆 Další vybavení:</h3>
+      <ul>
+          <li>Sportovní hala</li>
+          <li>Běžecká dráha
+              <ul>
+                  <li>400m ovál</li>
+                  <li>Sprinterská dráha</li>
+              </ul>
+          </li>
+          <li>Občerstvení</li>
+          <li>Parkoviště</li>
+      </ul>
+  </section>
+  
+
+    <section class="zaz-video">
+        <h2 class="zaz-title">Náš stadion v akci</h2>
+        <video controls>
+            <source src="imagine/tonda_gol.mp4" type="video/mp4">
+            Váš prohlížeč nepodporuje přehrávání videa.
+        </video>
+    </section>
+
+    <section class="zaz-form">
+        <h2 class="zaz-title">Přihlášení do klubu</h2>
+        <form>
+            <fieldset>
+                <legend>Osobní údaje</legend>
+                <label for="zaz-name">Jméno:</label>
+                <input type="text" id="zaz-name" required>
+                
+                <label for="zaz-email">Email:</label>
+                <input type="email" id="zaz-email" required>
+            </fieldset>
+            <button type="submit">Odeslat</button>
+        </form>
+    </section>
+</main>
+
+<footer class="zaz-footer">
+    <p>&copy; 2025 TJ Poniklá. Všechna práva vyhrazena.</p>
+</footer>
+
+</body>
+</html>

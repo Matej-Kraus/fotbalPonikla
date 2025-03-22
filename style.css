@@ -416,6 +416,7 @@ footer a {
 /* Hero Section */
 .hero {
     background: url('hero-image.jpg') center/cover no-repeat;
+    background: url('historie-hero.jpg') center/cover no-repeat;
     height: 400px;
     display: flex;
     align-items: center;
@@ -427,51 +428,7 @@ footer a {
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-/* Přihláška Form */
-.container {
-    display: flex;
-    justify-content: space-around; /* Přidá rozestup mezi prvky */
-    align-items: flex-start;
-    gap: 30px; /* Větší mezera mezi sloupci */
-}
 
-.prihlaska {
-    width: 40%; /* Mírně zmenšená přihláška */
-}
-
-.rozpis-treninku {
-    width: 50%; /* Mírně zvětšený rozpis */
-}
-
-.prihlaska label {
-    display: block;
-    margin-top: 3px;
-    font-weight: bold;
-}
-
-.prihlaska input,
-.prihlaska textarea {
-    width: 100%;
-    margin-bottom: 5px;
-}
-
-
-
-.prihlaska button {
-    width: auto;
-    margin-top: 3px;
-    margin-bottom: 10px;
-    padding: 5px 10px;
-}
-
-.rozpis-treninku h2 {
-    margin-bottom: 10px;
-}
-
-.rozpis-treninku p {
-    font-size: 40px;
-    line-height: 2;
-}
 
 
 /* Trenéři */
@@ -569,3 +526,223 @@ footer a {
         transform: translateY(0);
     }
 }
+
+
+
+
+/* Obsah */
+
+
+/* Galerie */
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.gallery img {
+    width: 200px;  /* Nebo nastav šířku podle potřeby */
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.gallery img:hover {
+    transform: scale(1.1);
+}
+
+
+
+/* Hlavička */
+.zaz-header {
+    background-color: #0056b3;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    animation: zaz-fadeInDown 1s ease-in-out;
+}
+
+.zaz-nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.zaz-nav ul li {
+    margin: 0 15px;
+}
+
+.zaz-nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.zaz-nav ul li a:hover {
+    text-shadow: 0px 0px 10px white;
+}
+
+/* Sekce */
+.zaz-main {
+    padding: 20px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+/* Animovaný nadpis */
+.zaz-title {
+    text-align: center;
+    margin: 20px 0;
+    color: #0056b3;
+    animation: zaz-fadeInUp 1s ease-in-out;
+}
+
+/* Tabulka */
+.zaz-tabulka table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.zaz-tabulka table, .zaz-tabulka th, .zaz-tabulka td {
+    border: 1px solid #0056b3;
+    text-align: center;
+    padding: 10px;
+}
+
+.zaz-tabulka th {
+    background-color: #0056b3;
+    color: white;
+}
+
+.zaz-tabulka tr:nth-child(even) {
+    background-color: #e0e7ff;
+}
+
+/* Video sekce */
+.zaz-video {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.zaz-video video {
+    width: 80%;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Formulář */
+.zaz-form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.zaz-form fieldset {
+    border: 2px solid #0056b3;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.zaz-form legend {
+    font-weight: bold;
+    color: #0056b3;
+}
+
+.zaz-form label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.zaz-form input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.zaz-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.zaz-form button:hover {
+    background-color: #003580;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Animace */
+@keyframes zaz-fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes zaz-fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responzivita */
+@media (max-width: 768px) {
+    .zaz-nav ul {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .zaz-nav ul li {
+        margin: 10px 0;
+    }
+
+    .zaz-video video {
+        width: 100%;
+    }
+}
+
+
+
+.zaz-seznamy {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.zaz-seznamy h3 {
+    color: #0056b3;
+    margin-bottom: 10px;
+}
+
+.zaz-seznamy ol, .zaz-seznamy ul {
+    padding-left: 20px;
+}
+
+.zaz-seznamy li {
+    margin: 5px 0;
+}
+
+
+

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Historie klubu TJ Poniklá</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .hero {
+            text-align: center;
+            padding: 30px 15px; /* Větší padding pro výšku */
+            color: white;
+            font-size: 2.5em;
+            font-weight: bold;
+            background-color: rgba(3, 94, 213, 0.8);
+            height: 250px; /* Nastavení pevné výšky */
+            display: flex; 
+            justify-content: center; 
+            align-items: center; /* Vertikální zarovnání textu */
+         }
+
+
+
+
+        .historie-container {
+            max-width: 900px;
+            margin: auto;
+            padding: 30px;
+            text-align: justify;
+            background: #f4f4f4;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery {
+            text-align: center;
+            padding: 30px;
+            background: #eaeaea;
+        }
+
+        .gallery-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-item {
+            width: 28%;
+            border-radius: 8px;
+            box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .gallery-item {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="imagine/logo.jpg" alt="TJ Poniklá">
+            <span class="logo-text">Historie klubu Poniklá</span>
+        </div>
+        <nav>
+            <div id="menu-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul id="nav-list">
+                <li><a href="index.html">Úvod</a></li>
+                <li><a href="soupiska.html">Soupiska</a></li>
+                <li><a href="deti.html">Děti</a></li>
+                <li><a href="historie.html">Historie</a></li>
+                <li><a href="hriste.html">Hřiště</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Historie klubu TJ Poniklá</h1>
+    </section>
+
+    <section class="historie-container">
+        <h2>Počátky klubu</h2>
+        <p>Fotbalový klub TJ Poniklá byl založen v roce 1923 jako amatérský tým nadšenců. První zápasy se hrály na provizorním hřišti a klub se postupně rozrůstal.</p>
+
+        <h2>Růst a rozvoj</h2>
+        <p>Během let se klub posunul do vyšších soutěží, přičemž největšího rozmachu dosáhl v 70. letech, kdy se dostal do krajské ligy. Bylo postaveno nové zázemí a klub získal širší fanouškovskou základnu.</p>
+
+        <h2>Současná éra</h2>
+        <p>Dnes je TJ Poniklá stabilním klubem s mládežnickými týmy a moderním stadionem. Klub se věnuje rozvoji mladých hráčů a pravidelně se účastní regionálních turnajů.</p>
+    </section>
+
+    <section class="gallery">
+        <div class="gallery-container">
+            <img class="gallery-item" src="imagine/historie_ponikla.jpg" alt="První tým TJ Poniklá">
+            <img class="gallery-item" src="imagine/historie_Ponikla2.jpg" alt="Zápas v roce 1985">
+            <img class="gallery-item" src="imagine/histoie_3.jpg" alt="Slavnostní otevření nového stadionu">
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 TJ Poniklá. Všechna práva vyhrazena.</p>
+        <p><a href="https://validator.w3.org/check?uri=referer">Validace HTML</a> | <a href="https://jigsaw.w3.org/css-validator/validator?uri=referer">Validace CSS</a></p>
+    </footer>
+</body>
+</html>
