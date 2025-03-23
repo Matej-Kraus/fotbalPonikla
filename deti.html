@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Děti - TJ Poniklá</title>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Preload obrázku pro LCP -->
+    <link rel="preload" href="imagine/logo.webp" as="image">
+
 </head>
 <body>
     <header>
         <div class="logo">
-            <img src="imagine/logo.jpg" alt="TJ Poniklá">
+            <img src="imagine/logo.webp" alt="TJ Poniklá" loading="lazy">
             <span class="logo-text">Fotbalový klub Poniklá</span>
         </div>
         <nav>
@@ -54,67 +58,62 @@
         </p>
     </div>
     
-   
-
     <section class="soupiska">
+        <h2>Trenéři</h2>
 
-
-    <h2>Trenéři</h2>
-
-    <section class="hrac-container">
-        <div class="hrac">
-            <img src="imagine/pavel_koucky.jpg" alt="Trenér Jan Novák">
-            <h3>Jan Novák</h3>
-            <p>Hlavní trenér mládeže</p>
-            <p><strong>Telefon: </strong>736 666 666</p>
-            <p><strong>Email: </strong> jan.novak@tjponikla.cz</p>
-        </div>
-        
-        <div class="hrac">
-            <img src="imagine/pavel_koucky.jpg" alt="Trenér Jan Novák">
-            <h3>Jan Novák</h3>
-            <p>Hlavní trenér mládeže</p>
-            <p><strong>Telefon: </strong>777 123 456</p>
-            <p><strong>Email: </strong> jan.novak@tjponikla.cz</p>
-        </div>
+        <section class="hrac-container">
+            <div class="hrac">
+                <picture>
+                    <source srcset="imagine/pavel_koucky.webp" type="image/webp">
+                    <img src="imagine/pavel_koucky.jpg" alt="Trenér Jan Novák">
+                </picture>
+                <h3>Jan Novák</h3>
+                <p>Hlavní trenér mládeže</p>
+                <p><strong>Telefon: </strong>736 666 666</p>
+                <p><strong>Email: </strong> jan.novak@tjponikla.cz</p>
+            </div>
+            
+            <div class="hrac">
+                <picture>
+                    <source srcset="imagine/pavel_koucky.webp" type="image/webp">
+                    <img src="imagine/pavel_koucky.jpg" alt="Trenér Jan Novák">
+                </picture>
+                <h3>Jan Novák</h3>
+                <p>Hlavní trenér mládeže</p>
+                <p><strong>Telefon: </strong>777 123 456</p>
+                <p><strong>Email: </strong> jan.novak@tjponikla.cz</p>
+            </div>
+        </section>
     </section>
-</section>
 
+    <div class="rozpis-treninku-container">
+        <h1 class="rozpis-treninku-header">Rozpis tréninků</h1>
 
+        <div class="rozpis-treninku-list">
+            <div class="rozpis-treninku-item">
+                <h3>Pondělí</h3>
+                <p>18:00 - 19:30</p>
+                <p>Technika a kondice</p>
+            </div>
 
-<div class="rozpis-treninku-container">
-    <h1 class="rozpis-treninku-header">Rozpis tréninků</h1>
+            <div class="rozpis-treninku-item">
+                <h3>Středa</h3>
+                <p>17:30 - 19:00</p>
+                <p>Ofenzivní cvičení</p>
+            </div>
 
-    <div class="rozpis-treninku-list">
-        <div class="rozpis-treninku-item">
-            <h3>Pondělí</h3>
-            <p>18:00 - 19:30</p>
-            <p>Technika a kondice</p>
-        </div>
-
-        <div class="rozpis-treninku-item">
-            <h3>Středa</h3>
-            <p>17:30 - 19:00</p>
-            <p>Ofenzivní cvičení</p>
-        </div>
-
-        <div class="rozpis-treninku-item">
-            <h3>Pátek</h3>
-            <p>19:00 - 20:30</p>
-            <p>Defenzivní cvičení</p>
+            <div class="rozpis-treninku-item">
+                <h3>Pátek</h3>
+                <p>19:00 - 20:30</p>
+                <p>Defenzivní cvičení</p>
+            </div>
         </div>
     </div>
-</div>
-    
- 
     
     <footer>
         <p>&copy; 2025 TJ Poniklá. Všechna práva vyhrazena.</p>
     </footer>
 
-    <script src="script.js">
-
-        
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
