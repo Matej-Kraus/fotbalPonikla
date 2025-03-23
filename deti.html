@@ -6,8 +6,9 @@
     <title>Děti - TJ Poniklá</title>
     <link rel="stylesheet" href="style.css">
     
-    <!-- Preload obrázku pro LCP -->
+    <!-- Preload images for LCP optimization -->
     <link rel="preload" href="imagine/logo.webp" as="image">
+    <link rel="preload" href="imagine/hromadne_foto.webp" as="image">
 
 </head>
 <body>
@@ -49,9 +50,7 @@
                 <li>Moderní tréninkové metody</li>
                 <li>Přátelský kolektiv a skvělou atmosféru</li>
             </ul>
-        
-            
-        
+
         <p>
             Přijímáme kluky i holky všech věkových kategorií. Pokud máš rád/a fotbal a chceš se stát součástí našeho týmu, 
             neváhej a přihlas se ještě dnes! ⚽🔥  
@@ -60,12 +59,11 @@
     
     <section class="soupiska">
         <h2>Trenéři</h2>
-
         <section class="hrac-container">
             <div class="hrac">
                 <picture>
                     <source srcset="imagine/pavel_koucky.webp" type="image/webp">
-                    <img src="imagine/pavel_koucky.jpg" alt="Trenér Jan Novák">
+                    <img src="imagine/pavel_koucky.jpg" alt="Trenér Jan Novák - hlavní trenér mládeže">
                 </picture>
                 <h3>Jan Novák</h3>
                 <p>Hlavní trenér mládeže</p>
@@ -76,7 +74,7 @@
             <div class="hrac">
                 <picture>
                     <source srcset="imagine/pavel_koucky.webp" type="image/webp">
-                    <img src="imagine/pavel_koucky.jpg" alt="Trenér Jan Novák">
+                    <img src="imagine/pavel_koucky.jpg" alt="Trenér Jan Novák - hlavní trenér mládeže">
                 </picture>
                 <h3>Jan Novák</h3>
                 <p>Hlavní trenér mládeže</p>
@@ -91,19 +89,19 @@
 
         <div class="rozpis-treninku-list">
             <div class="rozpis-treninku-item">
-                <h3>Pondělí</h3>
+                <h2>Pondělí</h2>
                 <p>18:00 - 19:30</p>
                 <p>Technika a kondice</p>
             </div>
 
             <div class="rozpis-treninku-item">
-                <h3>Středa</h3>
+                <h2>Středa</h2>
                 <p>17:30 - 19:00</p>
                 <p>Ofenzivní cvičení</p>
             </div>
 
             <div class="rozpis-treninku-item">
-                <h3>Pátek</h3>
+                <h2>Pátek</h2>
                 <p>19:00 - 20:30</p>
                 <p>Defenzivní cvičení</p>
             </div>
@@ -112,8 +110,9 @@
     
     <footer>
         <p>&copy; 2025 TJ Poniklá. Všechna práva vyhrazena.</p>
+        <p><a href="https://validator.w3.org/check?uri=referer" target="_blank" rel="noopener noreferrer">Validace HTML</a> | <a href="https://jigsaw.w3.org/css-validator/validator?uri=referer" target="_blank" rel="noopener noreferrer">Validace CSS</a></p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>

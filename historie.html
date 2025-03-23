@@ -6,10 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Historie klubu TJ Poniklá</title>
-    <link rel="stylesheet" href="style.css"> <!-- Tvé existující CSS soubory -->
-
-    <!-- Preload obrázku pro rychlejší načítání -->
+    <link rel="stylesheet" href="style.css"> <!-- Minifikovaná verze CSS -->
     <link rel="preload" href="imagine/logo.webp" as="image">
+    <link rel="preload" href="imagine/historie_ponikla.webp" as="image">
 </head>
 
 <body>
@@ -40,20 +39,21 @@
 
     <section class="historie-container">
         <h2>Počátky klubu</h2>
-        <p>Fotbalový klub TJ Poniklá byl založen v roce 1923 jako amatérský tým nadšenců. První zápasy se hrály na provizorním hřišti a klub se postupně rozrůstal.</p>
+        <p>Fotbalový klub TJ Poniklá byl založen v roce 1923 jako amatérský tým nadšenců...</p>
 
         <h2>Růst a rozvoj</h2>
-        <p>Během let se klub posunul do vyšších soutěží, přičemž největšího rozmachu dosáhl v 70. letech, kdy se dostal do krajské ligy. Bylo postaveno nové zázemí a klub získal širší fanouškovskou základnu.</p>
+        <p>Během let se klub posunul do vyšších soutěží...</p>
 
         <h2>Současná éra</h2>
-        <p>Dnes je TJ Poniklá stabilním klubem s mládežnickými týmy a moderním stadionem. Klub se věnuje rozvoji mladých hráčů a pravidelně se účastní regionálních turnajů.</p>
+        <p>Dnes je TJ Poniklá stabilním klubem...</p>
     </section>
 
     <section class="historie-gallery">
+        <h2>Galerie</h2>
         <div class="historie-gallery-container">
-            <img class="historie-gallery-item" src="imagine/historie_ponikla.webp" alt="První tým TJ Poniklá">
-            <img class="historie-gallery-item" src="imagine/historie_Ponikla2.webp" alt="Zápas v roce 1985">
-            <img class="historie-gallery-item" src="imagine/histoie_3.webp" alt="Slavnostní otevření nového stadionu">
+            <img class="historie-gallery-item" src="imagine/historie_ponikla.webp" alt="První tým TJ Poniklá" loading="lazy">
+            <img class="historie-gallery-item" src="imagine/historie_Ponikla2.webp" alt="Zápas v roce 1985" loading="lazy">
+            <img class="historie-gallery-item" src="imagine/histoie_3.webp" alt="Slavnostní otevření nového stadionu" loading="lazy">
         </div>
     </section>
 
@@ -61,5 +61,8 @@
         <p>&copy; 2025 TJ Poniklá. Všechna práva vyhrazena.</p>
         <p><a href="https://validator.w3.org/check?uri=referer">Validace HTML</a> | <a href="https://jigsaw.w3.org/css-validator/validator?uri=referer">Validace CSS</a></p>
     </footer>
+
+    <script src="script.min.js" defer></script> <!-- Minifikovaná verze JS -->
 </body>
+
 </html>
