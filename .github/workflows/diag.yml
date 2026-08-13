@@ -4,31 +4,23 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: curl authenticated FTP test (IPv4 forced)
+      - name: sftp test
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USER: ${{ secrets.FTP_USER }}
           FTP_PASS: ${{ secrets.FTP_PASS }}
         run: |
-          echo "test" > test.txt
-          echo "--- curl -4 login+upload ---"
-          timeout 15 curl -4 -v --connect-timeout 8 -T test.txt "ftp://$FTP_HOST/test.txt" --user "$FTP_USER:$FTP_PASS" 2>&1 | grep -v "^< 150\|^> PASS" | tail -40 || true
-      - name: python ftplib IPv4-forced test
-        env:
-          FTP_HOST: ${{ secrets.FTP_HOST }}
-          FTP_USER: ${{ secrets.FTP_USER }}
-          FTP_PASS: ${{ secrets.FTP_PASS }}
-        run: |
+          pip install paramiko -q
           python3 -c "
-          import ftplib, socket, os
+          import paramiko, os
           host = os.environ['FTP_HOST']
-          addr = socket.getaddrinfo(host, 21, socket.AF_INET)[0][4][0]
-          print('Connecting via IPv4 addr:', addr)
-          ftp = ftplib.FTP()
-          ftp.connect(addr, 21, timeout=10)
-          print(ftp.getwelcome())
-          ftp.login(os.environ['FTP_USER'], os.environ['FTP_PASS'])
-          print('Login OK')
-          print(ftp.nlst())
-          ftp.quit()
+          try:
+              t = paramiko.Transport((host, 22))
+              t.connect(username=os.environ['FTP_USER'], password=os.environ['FTP_PASS'])
+              print('SFTP LOGIN OK')
+              sftp = paramiko.SFTPClient.from_transport(t)
+              print(sftp.listdir('.'))
+              t.close()
+          except Exception as e:
+              print('SFTP FAILED:', type(e).__name__, repr(e))
           "
