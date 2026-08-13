@@ -192,7 +192,7 @@ def main():
                             ftp.storbinary(f"STOR {prefix}{remote_name}", f)
             print("✅ FTP upload hotov")
         except Exception as e:
-            print(f"⚠️  FTP chyba: {e}", file=sys.stderr)
+            print(f"⚠️  FTP chyba: {type(e).__name__}: {e!r}", file=sys.stderr)
 
     # Push na GitHub
     print("🚀 Pushuji na GitHub...")
