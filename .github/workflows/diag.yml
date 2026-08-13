@@ -4,13 +4,31 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: Network checks
+      - name: curl authenticated FTP test (IPv4 forced)
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
         run: |
-          echo "--- nslookup ---"
-          getent hosts tjponikla.cz || true
-          echo "--- nc port 21 ---"
-          timeout 8 bash -c "cat < /dev/null > /dev/tcp/tjponikla.cz/21" && echo "21 OPEN" || echo "21 FAILED"
-          echo "--- nc port 22 ---"
-          timeout 8 bash -c "cat < /dev/null > /dev/tcp/tjponikla.cz/22" && echo "22 OPEN" || echo "22 FAILED"
-          echo "--- curl ftp verbose (no login) ---"
-          timeout 15 curl -v --connect-timeout 8 "ftp://tjponikla.cz/" 2>&1 | head -40 || true
+          echo "test" > test.txt
+          echo "--- curl -4 login+upload ---"
+          timeout 15 curl -4 -v --connect-timeout 8 -T test.txt "ftp://$FTP_HOST/test.txt" --user "$FTP_USER:$FTP_PASS" 2>&1 | grep -v "^< 150\|^> PASS" | tail -40 || true
+      - name: python ftplib IPv4-forced test
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+        run: |
+          python3 -c "
+          import ftplib, socket, os
+          host = os.environ['FTP_HOST']
+          addr = socket.getaddrinfo(host, 21, socket.AF_INET)[0][4][0]
+          print('Connecting via IPv4 addr:', addr)
+          ftp = ftplib.FTP()
+          ftp.connect(addr, 21, timeout=10)
+          print(ftp.getwelcome())
+          ftp.login(os.environ['FTP_USER'], os.environ['FTP_PASS'])
+          print('Login OK')
+          print(ftp.nlst())
+          ftp.quit()
+          "
