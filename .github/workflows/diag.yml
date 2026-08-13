@@ -1,0 +1,16 @@
+name: FTP diagnostika
+on: workflow_dispatch
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Network checks
+        run: |
+          echo "--- nslookup ---"
+          getent hosts tjponikla.cz || true
+          echo "--- nc port 21 ---"
+          timeout 8 bash -c "cat < /dev/null > /dev/tcp/tjponikla.cz/21" && echo "21 OPEN" || echo "21 FAILED"
+          echo "--- nc port 22 ---"
+          timeout 8 bash -c "cat < /dev/null > /dev/tcp/tjponikla.cz/22" && echo "22 OPEN" || echo "22 FAILED"
+          echo "--- curl ftp verbose (no login) ---"
+          timeout 15 curl -v --connect-timeout 8 "ftp://tjponikla.cz/" 2>&1 | head -40 || true
