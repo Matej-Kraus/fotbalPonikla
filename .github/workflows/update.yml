@@ -2,22 +2,30 @@ name: Aktualizace tabulky a zápasů
 
 on:
   schedule:
-    # 6:00 UTC ~ 8:00 v Praze (posune se o hodinu při přechodu na zimní čas)
+    # 6:00 UTC ~ 8:00 v Praze (posune se o hodinu při přechodu na zimní čas).
+    # Pondělí, aby v tabulce už byly výsledky z víkendu.
     - cron: "0 6 * * 1"
   workflow_dispatch:
 
 permissions:
   contents: write
 
+# Dva běhy najednou by si přepisovaly commity.
+concurrency:
+  group: aktualizace
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
 
       - run: pip install -r requirements.txt
 
@@ -31,4 +39,18 @@ jobs:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USER: ${{ secrets.FTP_USER }}
           FTP_PASS: ${{ secrets.FTP_PASS }}
-        run: python update.py
+        # Tři pokusy — sportmap.cz i denik.cz občas krátce nereagují.
+        # Skript je idempotentní, opakování nic nerozbije.
+        run: |
+          for pokus in 1 2 3; do
+            echo "::group::Pokus $pokus"
+            if python update.py; then
+              echo "::endgroup::"
+              exit 0
+            fi
+            echo "::endgroup::"
+            echo "Pokus $pokus selhal."
+            [ "$pokus" -lt 3 ] && sleep 60
+          done
+          echo "::error::Aktualizace selhala i po třech pokusech."
+          exit 1
