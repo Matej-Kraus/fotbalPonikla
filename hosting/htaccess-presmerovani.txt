@@ -1,0 +1,42 @@
+Záložní řešení: hosting si tabulky bere z GitHub Pages
+======================================================
+
+K čemu to je
+------------
+GitHub Actions se na Websupport nedostane — hosting přihlášení přijme
+a spojení hned zavře (na FTP i na SFTP). Kdyby se přístup nepodařilo
+povolit, jde hosting z týdenní aktualizace vyřadit úplně: místo aby se
+soubory nahrávaly, nechá se na ně přesměrovat.
+
+React aplikace na tjponikla.cz si tabulky tahá přes
+    fetch("/tabulka.html")  a  fetch("/nadhazenici.html")
+Když na tyhle dvě adresy hosting odpoví přesměrováním na GitHub Pages,
+fetch ho následuje a dostane vždy aktuální verzi. Pages k tomu posílá
+hlavičku "access-control-allow-origin: *", takže to z prohlížeče projde.
+
+Aktualizace pak jde takto, bez jakéhokoli zásahu:
+    GitHub Actions  →  commit do repozitáře  →  GitHub Pages  →  web
+
+Co udělat (jednou)
+------------------
+Nahrát obsah níže na hosting do souboru .htaccess v document rootu
+(tam, kde leží index.html). Z Macu to přes FTP funguje.
+
+Pozor: pokud tam .htaccess už je, tyhle řádky se k němu přidají,
+nepřepisuje se celý.
+
+------------------------------ začátek -------------------------------
+# Tabulka a rozpis se berou z GitHub Pages, kam je každý týden
+# vygeneruje repozitář Matej-Kraus/fotbalPonikla.
+Redirect 302 /tabulka.html https://matej-kraus.github.io/fotbalPonikla/tabulka.html
+Redirect 302 /nadhazenici.html https://matej-kraus.github.io/fotbalPonikla/nadchazejici_zapasy.html
+------------------------------- konec --------------------------------
+
+Jak zkontrolovat, že to funguje
+-------------------------------
+    curl -s https://tjponikla.cz/tabulka.html | head -3
+
+Musí se vrátit tabulka s týmy (ne řádek "Sezóna ještě nezačala").
+Pokud se vrátí HTML s přesměrováním, přidej -L:
+
+    curl -sL https://tjponikla.cz/tabulka.html | grep Poniklá
