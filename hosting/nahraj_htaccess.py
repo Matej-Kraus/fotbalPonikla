@@ -4,16 +4,17 @@
 Spouští se z Macu, odkud hosting spojení pouští:
 
     cd /Users/mates/fotbalPonikla
-    read -rs FTP_PASS && export FTP_PASS && .venv/bin/python hosting/nahraj_htaccess.py
+    .venv/bin/python hosting/nahraj_htaccess.py
 
-(read -rs přečte heslo, aniž by se vypsalo na obrazovku nebo zůstalo
-v historii shellu.)
+Na heslo se skript zeptá sám a nevypíše ho — nezůstane tedy
+ani v historii shellu.
 
 Skript stávající .htaccess nejdřív stáhne, řádky k němu jen přidá,
 ukáže výsledek a nahraje ho teprve po potvrzení.
 """
 
 import ftplib
+import getpass
 import io
 import os
 import sys
@@ -77,12 +78,16 @@ def najdi_root(ftp: ftplib.FTP) -> str:
 
 
 def main():
+    global PASS
     if not PASS:
-        raise SystemExit(
-            "Chybí FTP_PASS. Spusť to takhle, heslo se nikam nevypíše:\n"
-            "  read -rs FTP_PASS && export FTP_PASS && "
-            ".venv/bin/python hosting/nahraj_htaccess.py"
-        )
+        if not sys.stdin.isatty():
+            raise SystemExit(
+                "Chybí heslo a nejsem na terminálu. Spusť skript přímo v terminálu, "
+                "nebo nastav FTP_PASS."
+            )
+        PASS = getpass.getpass(f"FTP heslo pro {USER} (nevypíše se): ")
+    if not PASS:
+        raise SystemExit("Nezadal jsi heslo, nic se nedělo.")
 
     ftp = pripoj()
     try:

@@ -54,15 +54,22 @@ jobs:
           exit 1
 
       # Zelený běh má znamenat "na webu je aktuální tabulka", ne jen
-      # "commit prošel". Proto se čeká, než to Pages opravdu vypublikují.
-      - name: Kontrola, že Pages servírují novou verzi
+      # "commit prošel". Kontroluje se rovnou doména.
+      - name: Kontrola, že web servíruje novou verzi
         run: |
-          BASE="https://matej-kraus.github.io/fotbalPonikla"
+          DOMENA="https://tjponikla.cz"
+          server=$(curl -sS -m 20 -D - -o /dev/null "$DOMENA/" 2>/dev/null \
+                   | tr -d '\r' | awk -F': ' 'tolower($1)=="server"{print $2}')
+          echo "doménu obsluhuje: ${server:-neznámo}"
+          if [ "$server" != "GitHub.com" ]; then
+            echo "::warning::tjponikla.cz ještě neobsluhuje GitHub Pages (server: ${server:-neznámo}) — kontrolu přeskakuji. Až se přepne DNS, začne se kontrolovat ostrý web."
+            exit 0
+          fi
           for soubor in tabulka.html nadchazejici_zapasy.html; do
             echo "::group::$soubor"
             ok=0
             for pokus in $(seq 1 16); do
-              curl -sS -m 20 -o "/tmp/$soubor" "$BASE/$soubor?cb=$(date +%s)" || true
+              curl -sSL -m 20 -o "/tmp/$soubor" "$DOMENA/$soubor?cb=$(date +%s)" || true
               if cmp -s "/tmp/$soubor" "$soubor"; then
                 echo "shoda po $((pokus * 30))s"
                 ok=1
@@ -72,8 +79,8 @@ jobs:
             done
             echo "::endgroup::"
             if [ "$ok" -ne 1 ]; then
-              echo "::error::$soubor se na GitHub Pages nepropsal ani po 8 minutách."
+              echo "::error::$soubor se na tjponikla.cz nepropsal ani po 8 minutách."
               exit 1
             fi
           done
-          echo "✅ Pages servírují aktuální tabulku i rozpis."
+          echo "✅ tjponikla.cz servíruje aktuální tabulku i rozpis."
