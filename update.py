@@ -233,100 +233,143 @@ def has_real_rows(path: Path, placeholder: str) -> bool:
     return "<td>" in text and placeholder not in text
 
 
-# ── Nahrání na web (Websupport FTP) ───────────────────────────────────────────
+# ── Nahrání na web (Websupport) ────────────────────────────────────────────────
 
 UPLOAD_TARGETS = [
     ("nadchazejici_zapasy.html", "nadhazenici.html"),
     ("tabulka.html", "tabulka.html"),
 ]
-REMOTE_DIRS = ["", "public_html/"]
+# Kandidáti na document root. Nahrává se jen tam, kde soubor už je, případně
+# do prvního existujícího adresáře — ať nevznikají soubory na náhodných místech.
+REMOTE_DIRS = [".", "web", "public_html", "www"]
 
 
-def _connect_ftps():
-    """FTPS (explicitní AUTH TLS) — heslo nejde po drátě v plaintextu."""
+def _upload_sftp() -> tuple[list[str], list[str]]:
+    """SFTP na portu 22. Websupport ho musí mít v administraci povolený."""
+    import paramiko
+
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client.connect(
+        FTP_HOST, port=22, username=FTP_USER, password=FTP_PASS,
+        look_for_keys=False, allow_agent=False, timeout=30,
+    )
+    try:
+        sftp = client.open_sftp()
+        uploaded, failures = [], []
+        for local_name, remote_name in UPLOAD_TARGETS:
+            local_path = HERE / local_name
+            local_size = local_path.stat().st_size
+            dirs = [d for d in REMOTE_DIRS if _sftp_exists(sftp, f"{d}/{remote_name}")]
+            if not dirs:
+                dirs = [d for d in REMOTE_DIRS if _sftp_exists(sftp, d)][:1]
+            if not dirs:
+                failures.append(f"{remote_name}: na serveru nenalezen žádný cílový adresář")
+                continue
+            for d in dirs:
+                remote = f"{d}/{remote_name}"
+                try:
+                    sftp.put(str(local_path), remote)
+                    if sftp.stat(remote).st_size != local_size:
+                        failures.append(f"{remote}: velikost po nahrání nesouhlasí")
+                        continue
+                    uploaded.append(remote)
+                except Exception as e:
+                    failures.append(f"{remote}: {type(e).__name__}: {e}")
+        return uploaded, failures
+    finally:
+        client.close()
+
+
+def _sftp_exists(sftp, path: str) -> bool:
+    try:
+        sftp.stat(path)
+        return True
+    except IOError:
+        return False
+
+
+def _upload_ftp(use_tls: bool, passive: bool) -> tuple[list[str], list[str]]:
     import ftplib
-    f = ftplib.FTP_TLS()
-    f.connect(FTP_HOST, 21, timeout=30)
-    f.auth()
-    f.login(FTP_USER, FTP_PASS)
-    f.prot_p()
-    f.set_pasv(True)
-    return f
+
+    if use_tls:
+        ftp = ftplib.FTP_TLS()
+        ftp.connect(FTP_HOST, 21, timeout=30)
+        ftp.auth()
+        ftp.login(FTP_USER, FTP_PASS)
+        ftp.prot_p()
+    else:
+        ftp = ftplib.FTP()
+        ftp.connect(FTP_HOST, 21, timeout=30)
+        ftp.login(FTP_USER, FTP_PASS)
+    ftp.set_pasv(passive)
+
+    try:
+        uploaded, failures = [], []
+        for local_name, remote_name in UPLOAD_TARGETS:
+            local_path = HERE / local_name
+            local_size = local_path.stat().st_size
+            landed = False
+            for prefix in ("", "public_html/", "web/"):
+                remote = f"{prefix}{remote_name}"
+                try:
+                    with open(local_path, "rb") as fh:
+                        ftp.storbinary(f"STOR {remote}", fh)
+                    if ftp.size(remote) != local_size:
+                        failures.append(f"{remote}: velikost po nahrání nesouhlasí")
+                        continue
+                    uploaded.append(remote)
+                    landed = True
+                except Exception:
+                    pass  # cesta na serveru nemusí existovat, zkus další
+            if not landed:
+                failures.append(f"{remote_name}: nepodařilo se nahrát nikam")
+        return uploaded, failures
+    finally:
+        try:
+            ftp.quit()
+        except Exception:
+            ftp.close()
 
 
-def _connect_plain(passive: bool):
-    import ftplib
-    f = ftplib.FTP()
-    f.connect(FTP_HOST, 21, timeout=30)
-    f.login(FTP_USER, FTP_PASS)
-    f.set_pasv(passive)
-    return f
-
-
-CONNECT_STRATEGIES = [
-    ("FTPS / AUTH TLS, pasivní", _connect_ftps),
-    ("FTP pasivní", lambda: _connect_plain(True)),
-    ("FTP aktivní", lambda: _connect_plain(False)),
+UPLOAD_STRATEGIES = [
+    ("SFTP (port 22)", _upload_sftp),
+    ("FTPS / AUTH TLS", lambda: _upload_ftp(use_tls=True, passive=True)),
+    ("FTP pasivní", lambda: _upload_ftp(use_tls=False, passive=True)),
+    ("FTP aktivní", lambda: _upload_ftp(use_tls=False, passive=False)),
 ]
 
 
 def upload_to_web() -> list[str]:
-    """Nahraje vygenerované tabulky na web. Vrací seznam problémů (prázdný = OK).
+    """Nahraje tabulky na hosting. Vrací seznam problémů (prázdný = vše OK).
 
-    Websupport se z různých sítí chová jinak, proto se zkouší víc způsobů
-    připojení. Každý upload se navíc ověří porovnáním velikosti na serveru —
-    zelený běh tak znamená, že se web skutečně změnil.
+    Websupport pouští jen některé sítě, proto se zkouší víc protokolů.
+    Každý přenos se ověří velikostí na serveru — zelený běh tedy znamená,
+    že se web opravdu změnil.
     """
-    for label, connect in CONNECT_STRATEGIES:
+    attempts = []
+    for label, uploader in UPLOAD_STRATEGIES:
         print(f"   zkouším {label}...")
         try:
-            ftp = connect()
+            uploaded, failures = uploader()
         except Exception as e:
             print(f"   ✗ {label}: {type(e).__name__}: {e}", file=sys.stderr)
+            attempts.append(f"{label}: {type(e).__name__}: {e}")
             continue
-
-        try:
-            uploaded, failures = [], []
-            for local_name, remote_name in UPLOAD_TARGETS:
-                local_path = HERE / local_name
-                local_size = local_path.stat().st_size
-                landed = False
-                for prefix in REMOTE_DIRS:
-                    remote = f"{prefix}{remote_name}"
-                    try:
-                        with open(local_path, "rb") as fh:
-                            ftp.storbinary(f"STOR {remote}", fh)
-                        remote_size = ftp.size(remote)
-                        if remote_size != local_size:
-                            failures.append(
-                                f"{remote}: na serveru {remote_size} B, lokálně {local_size} B"
-                            )
-                            continue
-                        uploaded.append(remote)
-                        landed = True
-                    except Exception as e:
-                        # Ne každá cesta na serveru existuje, to je v pořádku.
-                        print(f"     • {remote}: {type(e).__name__}: {e}", file=sys.stderr)
-                if not landed:
-                    failures.append(f"{local_name} se nepodařilo nahrát nikam")
-
-            if uploaded and not failures:
-                print(f"   ✅ nahráno přes {label}: {', '.join(uploaded)}")
-                return []
-            if uploaded:
-                print(f"   ⚠️  částečně nahráno přes {label}: {', '.join(uploaded)}", file=sys.stderr)
-                return failures
-            print(f"   ✗ {label}: nenahrál se ani jeden soubor", file=sys.stderr)
-        finally:
-            try:
-                ftp.quit()
-            except Exception:
-                ftp.close()
+        if uploaded and not failures:
+            print(f"   ✅ nahráno přes {label}: {', '.join(uploaded)}")
+            return []
+        if uploaded:
+            print(f"   ⚠️  {label} nahrál jen část: {', '.join(uploaded)}", file=sys.stderr)
+            return failures
+        print(f"   ✗ {label}: nenahrál se ani jeden soubor", file=sys.stderr)
+        attempts.append(f"{label}: " + "; ".join(failures) if failures else f"{label}: nic")
 
     return [
-        "FTP upload selhal všemi způsoby (FTPS, pasivní i aktivní FTP) — "
-        "web zůstal nezměněný. Zkontroluj přihlašovací údaje a jestli hosting "
-        "nepustí jen určité IP adresy."
+        "Nepodařilo se nahrát na hosting žádným protokolem, web zůstal nezměněný. "
+        "Websupport přihlášení přijme a spojení pak zavře, což znamená, že pro "
+        "tuhle síť není přístup povolený — v administraci Websupportu je potřeba "
+        "zapnout SSH/SFTP přístup. Podrobnosti: " + " | ".join(attempts)
     ]
 
 
