@@ -1,0 +1,25 @@
+name: Diagnostika připojení (dočasné)
+on: workflow_dispatch
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Co je z runneru dosažitelné
+        run: |
+          echo "veřejná IP runneru: $(curl -s -m 10 https://api.ipify.org)"
+          python3 - <<'PY'
+          import socket
+          for port in (21, 22, 2222, 990):
+              try:
+                  s = socket.create_connection(("tjponikla.cz", port), timeout=10)
+                  s.settimeout(10)
+                  try:
+                      banner = s.recv(200)
+                  except Exception as e:
+                      banner = f"(bez banneru: {type(e).__name__})".encode()
+                  print(f"port {port}: TCP OK | {banner[:120]!r}")
+                  s.close()
+              except Exception as e:
+                  print(f"port {port}: {type(e).__name__}: {e}")
+          PY
