@@ -233,6 +233,103 @@ def has_real_rows(path: Path, placeholder: str) -> bool:
     return "<td>" in text and placeholder not in text
 
 
+# ── Nahrání na web (Websupport FTP) ───────────────────────────────────────────
+
+UPLOAD_TARGETS = [
+    ("nadchazejici_zapasy.html", "nadhazenici.html"),
+    ("tabulka.html", "tabulka.html"),
+]
+REMOTE_DIRS = ["", "public_html/"]
+
+
+def _connect_ftps():
+    """FTPS (explicitní AUTH TLS) — heslo nejde po drátě v plaintextu."""
+    import ftplib
+    f = ftplib.FTP_TLS()
+    f.connect(FTP_HOST, 21, timeout=30)
+    f.auth()
+    f.login(FTP_USER, FTP_PASS)
+    f.prot_p()
+    f.set_pasv(True)
+    return f
+
+
+def _connect_plain(passive: bool):
+    import ftplib
+    f = ftplib.FTP()
+    f.connect(FTP_HOST, 21, timeout=30)
+    f.login(FTP_USER, FTP_PASS)
+    f.set_pasv(passive)
+    return f
+
+
+CONNECT_STRATEGIES = [
+    ("FTPS / AUTH TLS, pasivní", _connect_ftps),
+    ("FTP pasivní", lambda: _connect_plain(True)),
+    ("FTP aktivní", lambda: _connect_plain(False)),
+]
+
+
+def upload_to_web() -> list[str]:
+    """Nahraje vygenerované tabulky na web. Vrací seznam problémů (prázdný = OK).
+
+    Websupport se z různých sítí chová jinak, proto se zkouší víc způsobů
+    připojení. Každý upload se navíc ověří porovnáním velikosti na serveru —
+    zelený běh tak znamená, že se web skutečně změnil.
+    """
+    for label, connect in CONNECT_STRATEGIES:
+        print(f"   zkouším {label}...")
+        try:
+            ftp = connect()
+        except Exception as e:
+            print(f"   ✗ {label}: {type(e).__name__}: {e}", file=sys.stderr)
+            continue
+
+        try:
+            uploaded, failures = [], []
+            for local_name, remote_name in UPLOAD_TARGETS:
+                local_path = HERE / local_name
+                local_size = local_path.stat().st_size
+                landed = False
+                for prefix in REMOTE_DIRS:
+                    remote = f"{prefix}{remote_name}"
+                    try:
+                        with open(local_path, "rb") as fh:
+                            ftp.storbinary(f"STOR {remote}", fh)
+                        remote_size = ftp.size(remote)
+                        if remote_size != local_size:
+                            failures.append(
+                                f"{remote}: na serveru {remote_size} B, lokálně {local_size} B"
+                            )
+                            continue
+                        uploaded.append(remote)
+                        landed = True
+                    except Exception as e:
+                        # Ne každá cesta na serveru existuje, to je v pořádku.
+                        print(f"     • {remote}: {type(e).__name__}: {e}", file=sys.stderr)
+                if not landed:
+                    failures.append(f"{local_name} se nepodařilo nahrát nikam")
+
+            if uploaded and not failures:
+                print(f"   ✅ nahráno přes {label}: {', '.join(uploaded)}")
+                return []
+            if uploaded:
+                print(f"   ⚠️  částečně nahráno přes {label}: {', '.join(uploaded)}", file=sys.stderr)
+                return failures
+            print(f"   ✗ {label}: nenahrál se ani jeden soubor", file=sys.stderr)
+        finally:
+            try:
+                ftp.quit()
+            except Exception:
+                ftp.close()
+
+    return [
+        "FTP upload selhal všemi způsoby (FTPS, pasivní i aktivní FTP) — "
+        "web zůstal nezměněný. Zkontroluj přihlašovací údaje a jestli hosting "
+        "nepustí jen určité IP adresy."
+    ]
+
+
 # ── Hlavní funkce ─────────────────────────────────────────────────────────────
 
 def main():
@@ -265,34 +362,15 @@ def main():
     if not upcoming:
         print("   (žádné naplánované zápasy — mezi sezónami je to normální)")
 
-    # Upload na FTP server
+    # Nahrání na web
     if not FTP_PASS:
-        msg = "FTP_PASS není nastavené, přeskakuji FTP upload."
+        msg = "FTP_PASS není nastavené, přeskakuji upload na web."
         print(f"⚠️  {msg}", file=sys.stderr)
         if IN_CI:
             problems.append(msg + " V Actions to znamená chybějící secret.")
     else:
-        print("📤 Nahrávám na FTP server...")
-        try:
-            import ftplib
-
-            with ftplib.FTP() as ftp:
-                ftp.connect(FTP_HOST, 21)
-                ftp.login(FTP_USER, FTP_PASS)
-                ftp.set_pasv(True)
-                uploads = [
-                    ("nadchazejici_zapasy.html", "nadhazenici.html"),
-                    ("tabulka.html", "tabulka.html"),
-                ]
-                for local_name, remote_name in uploads:
-                    for prefix in ("", "public_html/"):
-                        with open(HERE / local_name, "rb") as f:
-                            ftp.storbinary(f"STOR {prefix}{remote_name}", f)
-            print("✅ FTP upload hotov")
-        except Exception as e:
-            msg = f"FTP upload selhal: {type(e).__name__}: {e!r}"
-            print(f"⚠️  {msg}", file=sys.stderr)
-            problems.append(msg)
+        print("📤 Nahrávám na web...")
+        problems.extend(upload_to_web())
 
     # Push na GitHub
     print("🚀 Pushuji na GitHub...")
