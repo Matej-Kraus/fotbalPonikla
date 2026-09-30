@@ -2,3 +2,5 @@ __pycache__/
 .venv/
 .DS_Store
 update.log
+
+hosting/htaccess-zaloha.txt
