@@ -18,7 +18,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -34,11 +34,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      # Na hosting se odtud nenahrává — Websupport spojení z GitHubu zavírá.
+      # Web si tabulky bere přesměrováním z GitHub Pages, takže stačí commit.
       - name: Spuštění update.py
-        env:
-          FTP_HOST: ${{ secrets.FTP_HOST }}
-          FTP_USER: ${{ secrets.FTP_USER }}
-          FTP_PASS: ${{ secrets.FTP_PASS }}
         # Tři pokusy — sportmap.cz i denik.cz občas krátce nereagují.
         # Skript je idempotentní, opakování nic nerozbije.
         run: |
@@ -54,3 +52,28 @@ jobs:
           done
           echo "::error::Aktualizace selhala i po třech pokusech."
           exit 1
+
+      # Zelený běh má znamenat "na webu je aktuální tabulka", ne jen
+      # "commit prošel". Proto se čeká, než to Pages opravdu vypublikují.
+      - name: Kontrola, že Pages servírují novou verzi
+        run: |
+          BASE="https://matej-kraus.github.io/fotbalPonikla"
+          for soubor in tabulka.html nadchazejici_zapasy.html; do
+            echo "::group::$soubor"
+            ok=0
+            for pokus in $(seq 1 16); do
+              curl -sS -m 20 -o "/tmp/$soubor" "$BASE/$soubor?cb=$(date +%s)" || true
+              if cmp -s "/tmp/$soubor" "$soubor"; then
+                echo "shoda po $((pokus * 30))s"
+                ok=1
+                break
+              fi
+              sleep 30
+            done
+            echo "::endgroup::"
+            if [ "$ok" -ne 1 ]; then
+              echo "::error::$soubor se na GitHub Pages nepropsal ani po 8 minutách."
+              exit 1
+            fi
+          done
+          echo "✅ Pages servírují aktuální tabulku i rozpis."

@@ -405,12 +405,12 @@ def main():
     if not upcoming:
         print("   (žádné naplánované zápasy — mezi sezónami je to normální)")
 
-    # Nahrání na web
+    # Nahrání na hosting. V Actions se nedělá vůbec — hosting odtud nepouští
+    # dovnitř a web si tabulky bere přesměrováním z GitHub Pages (viz
+    # hosting/htaccess-presmerovani.txt). Upload zůstává pro ruční běh z Macu.
     if not FTP_PASS:
-        msg = "FTP_PASS není nastavené, přeskakuji upload na web."
-        print(f"⚠️  {msg}", file=sys.stderr)
-        if IN_CI:
-            problems.append(msg + " V Actions to znamená chybějící secret.")
+        print("ℹ️  FTP_PASS není nastavené, upload na hosting se přeskakuje "
+              "(web si tabulky bere z GitHub Pages).")
     else:
         print("📤 Nahrávám na web...")
         problems.extend(upload_to_web())
