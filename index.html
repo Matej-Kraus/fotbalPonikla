@@ -1,11 +1,34 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/imagine/logo.webp" type="image/webp">
+    <link rel="apple-touch-icon" sizes="180x180" href="/imagine/logo.webp">
+    <meta name="theme-color" content="#004aad">
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>TJ Poniklá</title>
+    <title>Fotbal Ponikla – TJ Ponikla | Rozpis zápasů & výsledky</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="canonical" href="https://www.tjponikla.cz/">
+    <meta name="google-site-verification" content="kiYvksQrt5hVuOpT2D-NUVsm05iaAlRiXKOK9OzpX7s" />
+    <meta name="description"
+      content="TJ Ponikla – vše o fotbalu Ponikla: rozpis zápasů, výsledky a fotogalerie.">
+      <script type="application/ld+json">
+        {
+          "@context":"https://schema.org",
+          "@type":"WebSite",
+          "url":"https://www.tjponikla.cz",
+          "name":"TJ Ponikla – Fotbalový klub",
+          "keywords":["fotbal ponikla","tjponikla","TJ Ponikla"]
+        }
+    </script>
+    <script src="script.js" async></script>
 </head>
 <body>
     <header>
@@ -24,24 +47,25 @@
                 <li><a href="soupiska.html">Soupiska</a></li>
                 <li><a href="deti.html">Děti</a></li>
                 <li><a href="historie.html">Historie</a></li>
-                <li><a href="hriste.html">Hřiště</a></li>
             </ul>
         </nav>
     </header>
 
     <!-- Změněno na div místo section pro odstranění varování -->
     <div id="main-photo">
-        <img src="imagine/hromadne_foto.webp" alt="Tým TJ Poniklá" width="800" height="500" loading="lazy">
+        <img src="imagine/spolecna_fotka.jpg" alt="Tým TJ Poniklá" width="800" height="500" loading="lazy">
     </div>
 
     <div id="tabulka" class="tabulky-container" style="scroll-margin-top: 80px;">
-        <iframe id="tabulkaIframe" src="tabulka.html" style="width: 49%;" height="600" title="Tabulka výsledků"></iframe>
-        <iframe id="zapasyIframe" src="nadchazejici_zapasy.html" style="width: 49%;" height="600" title="Nadcházející zápasy"></iframe>
+        <iframe id="tabulkaIframe" src="tabulka.html" title="Tabulka výsledků"></iframe>
+        <iframe id="zapasyIframe" src="nadchazejici_zapasy.html" title="Nadcházející zápasy"></iframe>
     </div>
+    
+    
       
     <div class="wrapper">
         <div class="map-container">
-            <h3>Kde nás najdete</h3>
+            <h3>Hřistě</h3>
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2529.068969776859!2d15.456956276728032!3d50.662979971633455!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470ec7bad623356d%3A0xd2d314b753282fa3!2zRm90YmFsb3bDqSBoxZlpxaF0xJsgUG9uaWtsw6E!5e0!3m2!1scs!2scz!4v1739966859310!5m2!1scs!2scz" style="width: 100%; height: 450px; border: 0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="mapa ponikla"></iframe>       
         </div>
     
@@ -51,7 +75,6 @@
                     <h2>Kontaktujte nás</h2>
                     <ul>
                         <li><img src="imagine/email_logo.webp" alt="Email" width="30" height="30"> info@tjponikla.cz</li>
-                        <li><img src="imagine/white-phone-icon-on-blue-background-vector-7352042.webp" alt="Telefon" width="30" height="30"> +420 123 456 789</li>
                     </ul>
                 </div>
             </div>
@@ -69,20 +92,5 @@
         </section>
     </div>
 
-    <footer>
-        <p>&copy; 2025 TJ Poniklá. Všechna práva vyhrazena.</p>
-        <p>
-            <a target="_blank" href="https://achecks.org/achecker#wcag21aa-mobile,https://matej-kraus.github.io/fotbalPonikla/index.html">
-                <img src="https://achecks.org/images/icon_W21_aa.png" alt="AChecker accessibility checker: WCAG 2.1 (Level AA)" height="32" width="88" />
-            </a>
-        </p>
-        <p>
-            <a href="https://jigsaw.w3.org/css-validator/validator?uri=https%3A%2F%2Fmatej-kraus.github.io%2FfotbalPonikla%2Findex.html&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=cs" target="_blank">Validace CSS</a> | 
-            <a href="https://validator.w3.org/nu/?showsource=yes&doc=https%3A%2F%2Fmatej-kraus.github.io%2FfotbalPonikla%2Findex.html" target="_blank">Validace HTML</a>
-        </p>
-    </footer>
-    
-
-    <script src="script.js" async></script>
 </body>
 </html>
