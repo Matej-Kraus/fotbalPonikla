@@ -1,0 +1,22 @@
+; Záznamy pro tjponikla.cz — stav před přesunem (01.10.2026)
+; Vygenerováno z živého DNS. MX a SPF jsou e-mail na Googlu — ty MUSÍ zůstat.
+
+; --- web: nově na GitHub Pages ---
+tjponikla.cz.        300  IN  A      185.199.108.153
+tjponikla.cz.        300  IN  A      185.199.109.153
+tjponikla.cz.        300  IN  A      185.199.110.153
+tjponikla.cz.        300  IN  A      185.199.111.153
+www.tjponikla.cz.    300  IN  CNAME  matej-kraus.github.io.
+
+; --- e-mail (Google Workspace) — ZACHOVAT PŘESNĚ ---
+tjponikla.cz.        300  IN  MX     1 aspmx.l.google.com.
+tjponikla.cz.        300  IN  MX     5 alt1.aspmx.l.google.com.
+tjponikla.cz.        300  IN  MX     5 alt2.aspmx.l.google.com.
+tjponikla.cz.        300  IN  MX     10 alt3.aspmx.l.google.com.
+tjponikla.cz.        300  IN  MX     10 alt4.aspmx.l.google.com.
+tjponikla.cz.        300  IN  TXT    "v=spf1 include:_spf.google.com ~all"
+mail.tjponikla.cz.   300  IN  CNAME  ghs.googlehosted.com.
+
+; --- co se ruší ---
+; *.tjponikla.cz  A  37.9.175.164   (wildcard na Websupport, nic ho nepoužívá)
+; tjponikla.cz    A  37.9.175.163   (starý hosting)
