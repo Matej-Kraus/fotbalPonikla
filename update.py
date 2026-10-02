@@ -373,6 +373,68 @@ def upload_to_web() -> list[str]:
     ]
 
 
+# ── Udržení naplánovaného běhu ────────────────────────────────────────────────
+
+# GitHub vypíná naplánovaná workflow ve veřejných repozitářích po 60 dnech
+# bez aktivity. Mezi sezónami se tabulka nemění, takže by se nic necommitlo
+# a plán by se v zimě sám vypnul. Proto se po delší pauze zapíše razítko.
+DNI_DO_RAZITKA = 45
+RAZITKO = "posledni-kontrola.txt"
+
+
+def _git(*args, **kw) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        ["git", "-C", str(HERE), *args], capture_output=True, text=True, **kw
+    )
+
+
+def _dni_od_posledniho_commitu() -> int | None:
+    r = _git("log", "-1", "--format=%ct")
+    if r.returncode != 0 or not r.stdout.strip():
+        return None
+    posledni = datetime.fromtimestamp(int(r.stdout.strip()))
+    return (datetime.now() - posledni).days
+
+
+def _push(problems: list[str], co: str) -> None:
+    push = _git("push")
+    if push.returncode == 0:
+        print(f"✅ {co}")
+        return
+    chyba = push.stderr.strip().splitlines()
+    msg = f"git push selhal: {chyba[-1] if chyba else 'neznámá chyba'}"
+    print(f"⚠️  {msg}", file=sys.stderr)
+    problems.append(msg)
+
+
+def udrz_plan_zivy(problems: list[str]) -> None:
+    """Po dlouhé pauze commitne razítko, aby GitHub nevypnul naplánovaný běh."""
+    dni = _dni_od_posledniho_commitu()
+    if dni is None:
+        print("   (nelze zjistit datum posledního commitu, razítko přeskakuji)")
+        return
+    if dni < DNI_DO_RAZITKA:
+        print(f"   Poslední commit před {dni} dny, razítko není potřeba.")
+        return
+
+    print(f"   Poslední commit před {dni} dny — zapisuji razítko, aby GitHub "
+          "nevypnul naplánovaný běh.")
+    (HERE / RAZITKO).write_text(
+        "Poslední kontrola tabulky: "
+        + datetime.now().strftime("%d.%m.%Y")
+        + "\nTabulka se nezměnila (mezi sezónami je to normální).\n"
+        "Tento soubor jen drží repozitář aktivní, aby GitHub nevypnul\n"
+        "naplánovaný týdenní běh po 60 dnech bez aktivity.\n",
+        encoding="utf-8",
+    )
+    _git("add", RAZITKO)
+    commit = _git("commit", "-m", f"Kontrola bez změn: {datetime.now():%d.%m.%Y}")
+    if "nothing to commit" in commit.stdout + commit.stderr:
+        print("   Razítko se nezměnilo.")
+        return
+    _push(problems, "razítko zapsáno")
+
+
 # ── Hlavní funkce ─────────────────────────────────────────────────────────────
 
 def main():
@@ -418,25 +480,13 @@ def main():
     # Push na GitHub
     print("🚀 Pushuji na GitHub...")
     date_str = datetime.now().strftime("%d.%m.%Y")
-    subprocess.run(
-        ["git", "-C", str(HERE), "add", "nadchazejici_zapasy.html", "tabulka.html"], check=True
-    )
-    result = subprocess.run(
-        ["git", "-C", str(HERE), "commit", "-m", f"Auto-update: {date_str}"],
-        capture_output=True, text=True
-    )
+    _git("add", "nadchazejici_zapasy.html", "tabulka.html")
+    result = _git("commit", "-m", f"Auto-update: {date_str}")
     if "nothing to commit" in result.stdout + result.stderr:
         print("   Žádné změny k pushnutí.")
+        udrz_plan_zivy(problems)
     else:
-        push = subprocess.run(
-            ["git", "-C", str(HERE), "push"], capture_output=True, text=True
-        )
-        if push.returncode == 0:
-            print("✅ GitHub aktualizován")
-        else:
-            msg = f"git push selhal: {push.stderr.strip().splitlines()[-1] if push.stderr.strip() else 'neznámá chyba'}"
-            print(f"⚠️  {msg}", file=sys.stderr)
-            problems.append(msg)
+        _push(problems, "GitHub aktualizován")
 
     if problems:
         print("\n❌ Update dokončen s problémy:", file=sys.stderr)
