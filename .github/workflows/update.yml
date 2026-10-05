@@ -2,9 +2,12 @@ name: Aktualizace tabulky a zápasů
 
 on:
   schedule:
-    # 6:00 UTC ~ 8:00 v Praze (posune se o hodinu při přechodu na zimní čas).
-    # Pondělí, aby v tabulce už byly výsledky z víkendu.
-    - cron: "0 6 * * 1"
+    # Čtyřikrát denně, ne jednou týdně. GitHub naplánované běhy odkládá
+    # i o hodiny (u tohoto repozitáře to narostlo z 30 minut na 6 hodin)
+    # a občas je zahodí úplně — při jediném pokusu za týden pak web stojí
+    # celé dny. Skript je idempotentní a commituje jen při změně, takže
+    # běhy navíc nic nestojí ani nešpiní historii.
+    - cron: "0 */6 * * *"
   workflow_dispatch:
 
 permissions:
